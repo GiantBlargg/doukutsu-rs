@@ -301,10 +301,10 @@ impl GameProfile {
         }
 
         let something = [0u8; 0x80];
-        data.write(&something)?;
+        data.write_all(&something)?;
 
         data.write_u32::<BE>(0x464c4147)?;
-        data.write(&self.flags)?;
+        data.write_all(&self.flags)?;
 
         data.write_u32::<LE>(0)?; // unused(?) CS+ space
 

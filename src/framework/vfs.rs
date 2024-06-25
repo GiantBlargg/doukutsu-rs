@@ -637,7 +637,7 @@ mod tests {
         fs.mkdir(testdir).unwrap();
         {
             let mut f = fs.append(f1).unwrap();
-            let _ = f.write(test_string.as_bytes()).unwrap();
+            f.write_all(test_string.as_bytes()).unwrap();
         }
         {
             let mut buf = Vec::new();
