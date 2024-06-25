@@ -2,8 +2,7 @@ use std::any::Any;
 use std::cell::{RefCell, UnsafeCell};
 use std::ffi::{c_void, CStr};
 use std::hint::unreachable_unchecked;
-use std::mem;
-use std::mem::MaybeUninit;
+use std::mem::{self, offset_of};
 use std::ptr::null;
 use std::sync::Arc;
 
@@ -18,7 +17,7 @@ use crate::framework::error::GameResult;
 use crate::framework::gl;
 use crate::framework::gl::types::*;
 use crate::framework::graphics::{BlendMode, VSyncMode};
-use crate::framework::util::{field_offset, return_param};
+use crate::framework::util::return_param;
 use crate::game::GAME_SUSPENDED;
 
 pub struct GLContext {
@@ -416,7 +415,7 @@ impl RenderShader {
             gl::FLOAT,
             gl::FALSE,
             mem::size_of::<VertexData>() as _,
-            field_offset::<VertexData, _, _>(|v| &v.position) as _,
+            offset_of!(VertexData, position) as _,
         );
 
         gl.gl.VertexAttribPointer(
@@ -425,7 +424,7 @@ impl RenderShader {
             gl::FLOAT,
             gl::FALSE,
             mem::size_of::<VertexData>() as _,
-            field_offset::<VertexData, _, _>(|v| &v.uv) as _,
+            offset_of!(VertexData, uv) as _,
         );
 
         gl.gl.VertexAttribPointer(
@@ -434,7 +433,7 @@ impl RenderShader {
             gl::UNSIGNED_BYTE,
             gl::TRUE,
             mem::size_of::<VertexData>() as _,
-            field_offset::<VertexData, _, _>(|v| &v.color) as _,
+            offset_of!(VertexData, color) as _,
         );
 
         Ok(())
@@ -691,7 +690,7 @@ impl BackendRenderer for OpenGLRenderer {
         }
 
         #[cfg(feature = "backend-sdl")]
-            unsafe {
+        unsafe {
             let ctx = &mut *self.refs.ctx;
 
             match mode {
@@ -1116,7 +1115,7 @@ impl BackendRenderer for OpenGLRenderer {
                     gl::FLOAT,
                     gl::FALSE,
                     mem::size_of::<DrawVert>() as _,
-                    field_offset::<DrawVert, _, _>(|v| &v.pos) as _,
+                    offset_of!(DrawVert, pos) as _,
                 );
 
                 gl.gl.VertexAttribPointer(
@@ -1125,7 +1124,7 @@ impl BackendRenderer for OpenGLRenderer {
                     gl::FLOAT,
                     gl::FALSE,
                     mem::size_of::<DrawVert>() as _,
-                    field_offset::<DrawVert, _, _>(|v| &v.uv) as _,
+                    offset_of!(DrawVert, uv) as _,
                 );
 
                 gl.gl.VertexAttribPointer(
@@ -1134,7 +1133,7 @@ impl BackendRenderer for OpenGLRenderer {
                     gl::UNSIGNED_BYTE,
                     gl::TRUE,
                     mem::size_of::<DrawVert>() as _,
-                    field_offset::<DrawVert, _, _>(|v| &v.col) as _,
+                    offset_of!(DrawVert, col) as _,
                 );
 
                 for draw_list in draw_data.draw_lists() {

@@ -1,7 +1,7 @@
 use std::any::Any;
 use std::cell::{RefCell, UnsafeCell};
 use std::fmt::format;
-use std::mem;
+use std::mem::{self, offset_of};
 use std::pin::Pin;
 use std::ptr::slice_from_raw_parts_mut;
 
@@ -29,7 +29,6 @@ use crate::framework::error::{GameError, GameResult};
 use crate::framework::gamepad;
 use crate::framework::gamepad::{Axis, Button, GamepadType};
 use crate::framework::graphics::BlendMode;
-use crate::framework::util::field_offset;
 use crate::game::shared_game_state::SharedGameState;
 use crate::game::Game;
 
@@ -453,15 +452,15 @@ impl BackendGamepad for HorizonGamepad {
 lazy_static! {
     static ref VERTEX_ATTRIB_STATE: [VtxAttribState; 3] = [
         *VtxAttribState::new()
-            .set_offset(field_offset::<VertexData, _, _>(|v| &v.position) as u16)
+            .set_offset(offset_of!(VertexData, position) as u16)
             .set_size(VtxAttribSize::_2x32)
             .set_type(VtxAttribType::Float),
         *VtxAttribState::new()
-            .set_offset(field_offset::<VertexData, _, _>(|v| &v.uv) as u16)
+        .set_offset(offset_of!(VertexData, uv) as u16)
             .set_size(VtxAttribSize::_2x32)
             .set_type(VtxAttribType::Float),
         *VtxAttribState::new()
-            .set_offset(field_offset::<VertexData, _, _>(|v| &v.color) as u16)
+        .set_offset(offset_of!(VertexData, color) as u16)
             .set_size(VtxAttribSize::_4x8)
             .set_type(VtxAttribType::Unorm),
     ];
@@ -798,8 +797,8 @@ impl BackendTexture for Deko3DTexture {
 
         cmdbuf.bind_vtx_buffer(0, self.vbo.buffer.get_gpu_addr(), self.vbo.buffer.get_size());
 
-        let img_offset = field_offset::<Deko3DTextureDesc, _, _>(|d| &d.image);
-        let sampler_offset = field_offset::<Deko3DTextureDesc, _, _>(|d| &d.sampler);
+        let img_offset = offset_of!(Deko3DTextureDesc, image);
+        let sampler_offset = offset_of!(Deko3DTextureDesc, sampler);
 
         let desc_gpu = self.desc_memory.get_gpu_addr();
         cmdbuf.bind_sampler_descriptor_set(desc_gpu + sampler_offset as u64, 1);
@@ -1093,8 +1092,8 @@ impl BackendRenderer for Deko3DRenderer {
 
         let desc_gpu = desc_memory.get_gpu_addr();
 
-        let img_offset = field_offset::<Deko3DTextureDesc, _, _>(|d| &d.image);
-        let sampler_offset = field_offset::<Deko3DTextureDesc, _, _>(|d| &d.sampler);
+        let img_offset = offset_of!(Deko3DTextureDesc, image);
+        let sampler_offset = offset_of!(Deko3DTextureDesc, sampler);
 
         let mut layout = ImageLayout::new();
         ImageLayoutMaker::new(&self.device)
