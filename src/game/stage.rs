@@ -1,4 +1,4 @@
-use std::io::{Cursor, Read};
+use std::io::{Cursor, Read, Seek};
 use std::str::from_utf8;
 
 use byteorder::ReadBytesExt;
@@ -358,10 +358,7 @@ impl StageData {
                 let boss_no = f.read_u8()?;
                 f.read_exact(&mut name_buf)?;
                 // alignment
-                {
-                    let mut lol = [0u8; 3];
-                    let _ = f.read(&mut lol)?;
-                }
+                f.seek(std::io::SeekFrom::Current(3))?;
 
                 let tileset = from_encoding(&ts_buf[0..zero_index(&ts_buf)], encoding);
                 let map = from_encoding(&map_buf[0..zero_index(&map_buf)], encoding);

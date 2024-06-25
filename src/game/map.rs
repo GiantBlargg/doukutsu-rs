@@ -86,7 +86,7 @@ impl Map {
             let bytes = map_data.read_u8()? as u32;
             let mut raw_chars = Vec::new();
             raw_chars.resize(bytes as usize, 0u8);
-            map_data.read(&mut raw_chars)?;
+            map_data.read_exact(&mut raw_chars)?;
             Ok(encoding_rs::SHIFT_JIS.decode_without_bom_handling(&raw_chars).0.into_owned())
         }
 
