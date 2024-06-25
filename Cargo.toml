@@ -66,7 +66,7 @@ discord-rich-presence = { version = "0.2", optional = true }
 downcast = "0.11"
 encoding_rs = "0.8.33"
 fern = "0.6.2"
-glutin = { git = "https://github.com/doukutsu-rs/glutin.git", rev = "2dd95f042e6e090d36f577cbea125560dd99bd27", optional = true, default_features = false, features = ["x11"] }
+glutin = { git = "https://github.com/doukutsu-rs/glutin.git", rev = "2dd95f042e6e090d36f577cbea125560dd99bd27", optional = true, default-features = false, features = ["x11"] }
 imgui = { git = "https://github.com/imgui-rs/imgui-rs.git", rev = "5d771a83b82c5cc3dd58cca3f969d900369262e6" }
 image = { version = "0.24", default-features = false, features = ["png", "bmp"] }
 itertools = "0.10"
@@ -90,7 +90,7 @@ strum_macros = "0.24"
 # remove and replace when extract_if is in stable
 vec_mut_scan = "0.4"
 webbrowser = { version = "0.8.6", optional = true }
-winit = { git = "https://github.com/doukutsu-rs/winit.git", rev = "878f206d19af01b0977277929eee5e32667453c0", optional = true, default_features = false, features = ["x11"] }
+winit = { git = "https://github.com/doukutsu-rs/winit.git", rev = "878f206d19af01b0977277929eee5e32667453c0", optional = true, default-features = false, features = ["x11"] }
 xmltree = "0.10"
 
 #hack to not link SDL_image on Windows(causes a linker error)
